@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
+        
+    
+    <script>
+    //--------MENU start --------//
+    $(document).ready(function(){
+     
+        $.getJSON("json/menu.json", function(data){
+            $("#menu").html("");
+                $.each(data.menu, function(i,item){
+                    var liRow = "<li>"+"<a rel='external' href='#!"+item.menu+"'>"+item.h1+"</a>"+"</li>";
+                    $(liRow).appendTo("#menu");
+                  });
+             });
+
+    $.getJSON("json/ava.json", function(data){
+        $("#ava").html("");
+        $.each(data.ava, function(i,item){
+          var liRow = "<li>"+"<a href='#!"+item.menu+"'><img src='"+item.thu+"' class=\"tip\" title=\""+item.h1+"\" /></a>"+"</li>";
+          $(liRow).appendTo("#ava");
+          });
+      //$('.tip').tipTip();
+       });
+             
+        //Tiptip
+        //$('.tip').tipTip();
+        
+    });
+    //--------MENU end --------//
+    </script> 
+    
+    <script type="text/javascript" language="javascript">
+    //--------CONTENT start --------//
+    $(function(){
+        $.param.fragment.ajaxCrawlable( true );
+    // Keep a mapping of url-to-container for caching purposes.
+    var cache = {
+    // If url is '' (no fragment), display this div's content.
+        '': {
+          title: "Lion Lõvi - Tauno Erik",
+          elem: $('.avaleht')
+        }
+    };
+  
+  // Bind an event to window.onhashchange that, when the history state changes,
+  // gets the url from the hash and displays either our cached content or fetches
+  // new content to be displayed.
+  $(window).bind( 'hashchange', function(e) {
+    // Get the hash (fragment) as a string, with any leading # removed.
+    var url = $.param.fragment();
+    // Remove .current class from any previously "current" link(s).
+    $( 'a.current' ).removeClass( 'current' );
+    // Hide any visible ajax content.
+    $( '.content' ).children( ':visible' ).hide();
+    // Add .current class to "current" nav link(s), only if url isn't empty.
+    url && $( 'a[href="#!' + url + '"]' ).addClass( 'current' );
+  
+    if ( cache[ url ] ) {
+      // Since the element is already in the cache, it doesn't need to be
+      // created, so instead of creating it again, let's just show it!
+      cache[ url ].elem.show();
+      // Update the document title.
+      document.title = cache[ url ].title;
+    } else {
+      // Show "loading" content while AJAX content loads.
+      $( '.loading' ).show();
+      // Load external content (stored in the XML data file) via AJAX. The
+      // purpose of page.php is simply to provide the data stored in XML in
+      // the more friendly JSON format.
+//window.location.hash
+	$.getJSON( 'json/'window.location.hash'.json' , function(data){
+      //$.getJSON( 'json/', url+'.json' , function(data){
+        // Ensure that data was actually returned. You could easily go a step
+        // further and check that data.attr.status isn't '404', for example.
+        if ( data ) {
+          // Update the document title.
+          document.title = data.attr.title;
+          // Update the internal cache with a reference to this element as well
+          // as its title.
+          cache[ url ] = {
+            title: data.attr.title,
+            elem: $( '<div class="item"/>' ).html( data.content ).appendTo( '.content' )
+          };
+          
+        }
+        // Content loaded, hide "loading" content.
+        $( '.loading' ).hide();
+        
+      });
+    }
+  })
+  
+  // Since the event is only triggered when the hash changes, we need to trigger
+  // the event now, to handle the hash the page may have loaded with.
+  $(window).trigger( 'hashchange' );
+  
+});
+</script>
+
+    </head>
+    <body>
+        <a href="#!deep-link" rel="address:/deep-link">Deep link</a>
+        <a href="#!6001" rel="address:6001">6001</a>  
+        <div class="page">
+        
+        </div>
+
+        <ul id="menu"></ul>
+    </body>
+</html>
